@@ -2,10 +2,11 @@
   "manifest_version": 3,
   "name": "Resumax",
   "version": "0.1.0",
-  "description": "Toggle-highlight links on any page and pick a color.",
+  "description": "Tailor your resume to job postings by scanning for missing keywords.",
   "action": {
     "default_popup": "popup.html"
   },
+  "options_page": "options.html",
   "permissions": [
     "activeTab",
     "scripting",
