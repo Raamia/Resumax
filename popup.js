@@ -8,32 +8,30 @@ async function getCurrentTabId() {
 }
 
 async function init() {
-	const toggleButton = document.getElementById("toggle");
-	const colorInput = document.getElementById("color");
+	const scanButton = document.getElementById("scan");
+	const clearButton = document.getElementById("clear");
+	const optionsButton = document.getElementById("options");
 
-	try {
-		const stored = await chrome.storage.sync.get(["highlightColor"]);
-		if (stored && stored.highlightColor) {
-			colorInput.value = stored.highlightColor;
-		}
-	} catch {}
-
-	toggleButton.addEventListener("click", async () => {
+	scanButton.addEventListener("click", async () => {
 		const tabId = await getCurrentTabId();
 		if (tabId != null) {
 			try {
-				await chrome.tabs.sendMessage(tabId, { type: "toggleHighlight" });
-			} catch (e) {
-				// Ignore errors (e.g., pages where content scripts cannot run)
-			}
+				await chrome.tabs.sendMessage(tabId, { type: "scanJob" });
+			} catch (e) {}
 		}
 	});
 
-	colorInput.addEventListener("input", async (e) => {
-		const newColor = e.target.value;
-		try {
-			await chrome.storage.sync.set({ highlightColor: newColor });
-		} catch {}
+	clearButton.addEventListener("click", async () => {
+		const tabId = await getCurrentTabId();
+		if (tabId != null) {
+			try {
+				await chrome.tabs.sendMessage(tabId, { type: "clearOverlay" });
+			} catch (e) {}
+		}
+	});
+
+	optionsButton.addEventListener("click", async () => {
+		await chrome.runtime.openOptionsPage();
 	});
 }
 

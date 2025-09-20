@@ -311,6 +311,9 @@ chrome.runtime.onMessage.addListener((message) => {
 	if (!message) return;
 	if (message.type === "scanJob") {
 		scanAndShowOverlay();
+	} else if (message.type === "clearOverlay") {
+		clearHighlights();
+		removeOverlay();
 	}
 });
 
