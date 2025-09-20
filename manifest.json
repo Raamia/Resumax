@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Resumax",
+  "version": "0.1.0",
+  "description": "Toggle-highlight links on any page and pick a color.",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}
+
