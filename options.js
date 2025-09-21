@@ -75,6 +75,55 @@ function renderTokens(tokens) {
 	}
 }
 
+function revealAdvancedSections() {
+	const adv = document.getElementById("advancedSections");
+	if (adv && adv.style.display === "none") adv.style.display = "";
+}
+
+function attachDropzoneHandlers() {
+	const dropzone = document.getElementById("dropzone");
+	const fileInput = document.getElementById("fileInput");
+	if (!dropzone || !fileInput) return;
+
+	function clearHover() { dropzone.classList.remove("hover"); }
+	function setHover() { dropzone.classList.add("hover"); }
+
+	function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+
+	dropzone.addEventListener("click", () => fileInput.click());
+	dropzone.addEventListener("dragenter", (e) => { preventDefaults(e); setHover(); });
+	dropzone.addEventListener("dragover", (e) => { preventDefaults(e); setHover(); });
+	dropzone.addEventListener("dragleave", (e) => { preventDefaults(e); clearHover(); });
+	dropzone.addEventListener("drop", (e) => {
+		preventDefaults(e);
+		clearHover();
+		const files = e.dataTransfer && e.dataTransfer.files ? e.dataTransfer.files : [];
+		if (files.length) handlePickedFile(files[0]);
+	});
+
+	fileInput.addEventListener("change", () => {
+		if (fileInput.files && fileInput.files[0]) handlePickedFile(fileInput.files[0]);
+	});
+}
+
+function handlePickedFile(file) {
+	if (!file) return;
+	revealAdvancedSections();
+	const name = file.name || "resume";
+	const type = (file.type || "").toLowerCase();
+	if (type === "text/plain" || name.toLowerCase().endsWith(".txt")) {
+		const reader = new FileReader();
+		reader.onload = () => {
+			document.getElementById("resumeText").value = String(reader.result || "");
+			setStatus("Loaded text from file. Review and Save.");
+		};
+		reader.onerror = () => setStatus("Failed to read file");
+		reader.readAsText(file);
+	} else {
+		setStatus("File attached. For PDF/DOCX, paste extracted text below and Save.");
+	}
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById("save").addEventListener("click", () => {
 		saveOptions();
@@ -86,7 +135,11 @@ document.addEventListener("DOMContentLoaded", () => {
 		renderTokens([]);
 		setStatus("Cleared.");
 	});
-	restoreOptions();
+	restoreOptions().then(() => {
+		const current = document.getElementById("resumeText").value;
+		if (current && current.trim()) revealAdvancedSections();
+	});
+	attachDropzoneHandlers();
 });
 
 

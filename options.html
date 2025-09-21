@@ -16,13 +16,29 @@
       .section { margin-top: 24px; }
       input[type="text"], input[type="number"] { padding: 6px 8px; border: 1px solid #ccc; border-radius: 6px; width: 100%; box-sizing: border-box; }
       label { font-weight: 600; }
+      .dropzone { display: flex; align-items: center; justify-content: center; text-align: center; padding: 28px; border-radius: 20px; background: #e5e7eb; color: #4b5563; }
+      .dropzone-inner { background: #fff; width: 100%; max-width: 760px; padding: 24px; border-radius: 10px; border: 1px dashed #cbd5e1; }
+      .dropzone .icon { font-size: 28px; margin-bottom: 8px; }
+      .dropzone.hover .dropzone-inner { border-color: #64748b; background: #f8fafc; }
     </style>
   </head>
   <body>
     <h1>Resumax Options</h1>
     <p class="muted">Paste your resume. Resumax derives keywords for matching against job posts.</p>
 
-    <div class="section">
+    <div class="section" id="dropSection">
+      <div id="dropzone" class="dropzone">
+        <div class="dropzone-inner">
+          <div class="icon">⬇️</div>
+          <div>Drag & Drop your resume here or click to select a file (.doc, .docx, .pdf, .txt).</div>
+        </div>
+      </div>
+      <input id="fileInput" type="file" accept=".txt,.pdf,.doc,.docx" style="display:none" />
+      <div class="muted">Note: .txt will be auto-parsed. For .pdf/.docx, drop to attach then paste extracted text below.</div>
+    </div>
+
+    <div id="advancedSections" style="display:none">
+      <div class="section">
       <label for="resumeText">Resume Text</label>
       <textarea id="resumeText" placeholder="Paste your resume here (plain text)"></textarea>
       <div class="row">
@@ -30,22 +46,23 @@
         <button id="clear">Clear</button>
         <span id="status" class="muted"></span>
       </div>
-    </div>
+      </div>
 
-    <div class="section">
+      <div class="section">
       <label for="customStopwords">Custom stopwords (comma-separated)</label>
       <input id="customStopwords" type="text" placeholder="e.g., team, project, experience" />
-    </div>
+      </div>
 
-    <div class="section">
+      <div class="section">
       <label for="minTokenLength">Minimum token length</label>
       <input id="minTokenLength" type="number" min="2" max="20" value="3" />
-    </div>
+      </div>
 
-    <div class="section">
+      <div class="section">
       <div><strong>Derived Keywords</strong></div>
       <div id="tokens"></div>
       <div class="muted">Tokens update after Save.</div>
+      </div>
     </div>
 
     <script src="options.js"></script>
